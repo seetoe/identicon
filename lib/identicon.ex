@@ -20,10 +20,7 @@ defmodule Identicon do
     input
     |> hash_input
     |> pick_color
-  end
-
-  def pick_color(%Identicon.Image{hex: [r, g, b | _tail]} = image) do
-    %Identicon.Image{image | color: {r, g, b}}
+    |> build_grid
   end
 
   @doc """
@@ -39,5 +36,30 @@ defmodule Identicon do
       |> :binary.bin_to_list()
 
     %Identicon.Image{hex: hex}
+  end
+
+  def pick_color(%Identicon.Image{hex: [r, g, b | _tail]} = image) do
+    %Identicon.Image{image | color: {r, g, b}}
+  end
+
+  @doc """
+  Takes Image struct, returns 5x5 grid that implements identicon mirroring
+  """
+  def build_grid(%Identicon.Image{hex: hex} = image) do
+    hex
+    |> Enum.chunk(3)
+    |> Enum.map(&mirror_row/1)
+  end
+
+  @doc """
+  Inputs list of 3 numbers, outputs list of 5 numbers based on mirroring of input
+
+    ## Examples
+    iex> Identicon.mirror_row([114, 179, 2])
+    [114, 179, 2, 179, 114]
+  """
+  def mirror_row(row) do
+    [first, second | _tail] = row
+    row ++ [second, first]
   end
 end
