@@ -5,5 +5,5 @@ defmodule Identicon.Image do
   whereas a map allows you to have any property.
   """
 
-  defstruct hex: nil, color: nil
+  defstruct hex: nil, color: nil, grid: nil
 end
